@@ -39,3 +39,5 @@ while True:
                 pygame.draw.rect(screen, color, rect)
     pygame.display.update()
     clock.tick(1)
+
+    #coucou
