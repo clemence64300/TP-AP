@@ -1,4 +1,4 @@
-#ne pas oublier conda activate Damier.py
+# ne pas oublier conda activate Damier.py
 
 import random
 import sys
@@ -25,18 +25,18 @@ while True:
                 print("→")
             if event.key == pygame.K_LEFT:
                 print("←")
-    k=0
-    for i in range (20) :
-        k+=1
-        for j in range (20) :
-            k+=1
-            x = 30*i
-            y = 30*j
+    k = 0
+    for i in range(20):
+        k += 1
+        for j in range(20):
+            k += 1
+            x = 30 * i
+            y = 30 * j
             width = 30
             height = 30
             rect = [x, y, width, height]
-            if k%2 == 0 :
-                red, blue, green = 255,255,255
+            if k % 2 == 0:
+                red, blue, green = 255, 255, 255
                 color = [red, green, blue]
                 pygame.draw.rect(screen, color, rect)
     pygame.display.update()
