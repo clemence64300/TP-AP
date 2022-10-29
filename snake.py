@@ -1,3 +1,5 @@
+#ne pas oublier conda activate snake.py
+
 import random
 import sys
 import pygame
