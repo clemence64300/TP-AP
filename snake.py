@@ -4,10 +4,13 @@ import random
 import sys
 import pygame
 
-pygame.init()
-screen = pygame.display.set_mode([600, 600])
-clock = pygame.time.Clock()
+white = [255, 255, 255]
+black = [0, 0, 0]
+snake = [[10, 15],[11, 15],[12, 15]]
 
+pygame.init()
+screen = pygame.display.set_mode([20*30, 20*30])
+clock = pygame.time.Clock()
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -18,26 +21,36 @@ while True:
                 pygame.quit()
                 sys.exit()
             if event.key == pygame.K_UP:
-                print("↑")
+                direction = [0,-1]
+                snake.pop()
+                a = snake[0].copy()
+                a[0] += direction[0]
+                a[1] += direction[1]
+                snake.insert(0,a)
             if event.key == pygame.K_DOWN:
-                print("↓")
+                direction = [0,1]
+                snake.pop()
+                a = snake[0].copy()
+                a[0] += direction[0]
+                a[1] += direction[1]
+                snake.insert(0,a)
             if event.key == pygame.K_RIGHT:
-                print("→")
+                direction = [1,0]
+                snake.pop()
+                a = snake[0].copy()
+                a[0] += direction[0]
+                a[1] += direction[1]
+                snake.insert(0,a)
             if event.key == pygame.K_LEFT:
-                print("←")
-    k=0
-    for i in range (20) :
-        k+=1
-        for j in range (20) :
-            k+=1
-            x = 30*i
-            y = 30*j
-            width = 30
-            height = 30
-            rect = [x, y, width, height]
-            if k%2 == 0 :
-                red, blue, green = 255,255,255
-                color = [red, green, blue]
-                pygame.draw.rect(screen, color, rect)
-    pygame.display.update()
+                direction = [-1,0]
+                snake.pop()
+                a = snake[0].copy()
+                a[0] += direction[0]
+                a[1] += direction[1]
+                snake.insert(0,a)
+    screen.fill(white)
+    for x, y in snake:
+        rect = [x*20, y*20, 20, 20]
+        pygame.draw.rect(screen, black, rect)  
+        pygame.display.update()
     clock.tick(1)
