@@ -3,18 +3,26 @@ import random
 import sys
 import pygame
 
+#couleurs
 white = [255, 255, 255]
 black = [0, 0, 0]
 red = [255, 0, 0]
 
+#éléments du jeu
 snake = [[10, 15], [11, 15], [12, 15]]
 direction = [0, 1]
 fruit = [random.randint(0, 30) * 20, random.randint(0, 30) * 20, 20, 20]
 
+#écran
 pygame.init()
 screen = pygame.display.set_mode([20 * 30, 20 * 30])
 clock = pygame.time.Clock()
 
+#score
+score = 0
+pygame.display.set_caption(f"🐍 Score: {score}")
+
+#jeu
 while True:
 
     #événement du clavier
@@ -35,13 +43,15 @@ while True:
             if event.key == pygame.K_LEFT and direction != [1, 0]:
                 direction = [-1, 0]
     
-    #manger le fruit et grandir
+    #manger le fruit, grandir, augmenter le score
     if snake[0][0] == fruit[0]//20 and snake[0][1] == fruit[1]//20 :
             fruit = [random.randint(0, 30) * 20, random.randint(0, 30) * 20, 20, 20]
             newqueue = snake[-1].copy()
             newqueue[0] += direction[0]
             newqueue[1] += direction[1]
             snake.append(newqueue)
+            score += 1
+            pygame.display.set_caption(f"🐍 Score: {score}")
 
     #déplacement du serpent
     snake.pop()
