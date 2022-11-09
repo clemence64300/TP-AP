@@ -3,78 +3,103 @@ import random
 import sys
 import pygame
 
-#couleurs
-white = [255, 255, 255]
-black = [0, 0, 0]
-red = [255, 0, 0]
+# Constants
+WHITE = [255, 255, 255]
+BLACK = [0, 0, 0]
+RED = [255, 0, 0]
+COLORS = {"background": WHITE, "snake": BLACK, "fruit": RED}
 
-#éléments du jeu
+WIDTH = 30      # number of cells
+HEIGHT = 30     # number of cells
+CELL_SIZE = 20  # number of pixels
+
+FPS = 5         #frames per second
+
+UP = [0, -1]
+DOWN = [0, 1]
+LEFT = [-1, 0]
+RIGHT = [1, 0]
+
+
+# Game state
 snake = [[10, 15], [11, 15], [12, 15]]
-direction = [0, 1]
-fruit = [random.randint(0, 30) * 20, random.randint(0, 30) * 20, 20, 20]
+direction = LEFT
+fruit = [random.randint(0, WIDTH-1 ) * CELL_SIZE, random.randint(0, HEIGHT-1) * CELL_SIZE, CELL_SIZE, CELL_SIZE]
 
-#écran
-pygame.init()
-screen = pygame.display.set_mode([20 * 30, 20 * 30])
-clock = pygame.time.Clock()
+
+# Helper Function
+def exit():
+    pygame.quit()
+    sys.exit()
 
 #score
 score = 0
 pygame.display.set_caption(f"🐍 Score: {score}")
 
-#jeu
-while True:
 
-    #événement du clavier
+##fonctions
+
+# Event Management 
+def handle_events():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+            exit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_q:
-                pygame.quit()
-                sys.exit()
-            if event.key == pygame.K_UP and direction != [0, 1]:
-                direction = [0, -1]
-            if event.key == pygame.K_DOWN and direction != [0, -1]:
-                direction = [0, 1]
-            if event.key == pygame.K_RIGHT and direction != [-1, 0]:
-                direction = [1, 0]
-            if event.key == pygame.K_LEFT and direction != [1, 0]:
-                direction = [-1, 0]
-    
-    #manger le fruit, grandir, augmenter le score
-    if snake[0][0] == fruit[0]//20 and snake[0][1] == fruit[1]//20 :
-            fruit = [random.randint(0, 30) * 20, random.randint(0, 30) * 20, 20, 20]
-            newqueue = snake[-1].copy()
-            newqueue[0] += direction[0]
-            newqueue[1] += direction[1]
-            snake.append(newqueue)
-            score += 1
-            pygame.display.set_caption(f"🐍 Score: {score}")
+                exit()
+            if event.key == pygame.K_UP and direction != DOWN:
+                direction = UP
+            if event.key == pygame.K_DOWN and direction != UP:
+                direction = DOWN
+            if event.key == pygame.K_RIGHT and direction != LEFT:
+                direction = RIGHT
+            if event.key == pygame.K_LEFT and direction != RIGHT:
+                direction = LEFT
 
-    #toucher le mur
-    if snake[0][0] < 0 or snake[0][0] >29 or snake[0][1] < 0 or snake[0][1] >29:
-        pygame.quit()
-        sys.exit()
-
-    #se mordre la queue
+#Game Logic
+def move_snake():
+    if snake[0][0] == fruit[0]//CELL_SIZE and snake[0][1] == fruit[1]//CELL_SIZE :
+        fruit = [random.randint(0, WIDTH - 1) * CELL_SIZE, random.randint(0, HEIGHT - 1) * CELL_SIZE, CELL_SIZE, CELL_SIZE]
+        newqueue = snake[-1].copy()
+        newqueue[0] += direction[0]
+        newqueue[1] += direction[1]
+        snake.append(newqueue)
+        score += 1
+    if snake[0][0] < 0 or snake[0][0] >= WIDTH or snake[0][1] < 0 or snake[0][1] >= HEIGHT:
+        exit()
     if snake[0][0] == snake[-1][0] and snake[0][1] == snake[-1][1] :
-        pygame.quit()
-        sys.exit()
-
-    #déplacement du serpent
+        exit()
     snake.pop()
     a = snake[0].copy()
     a[0] += direction[0]
     a[1] += direction[1]
     snake.insert(0, a)
-    screen.fill(white)
+    screen.fill(COLORS["background"])
 
-    #actualiser le dessin et l'écran
-    pygame.draw.rect(screen, red, fruit)
+# Setup
+def setup():
+    pygame.init()
+    screen = pygame.display.set_mode([CELL_SIZE * WIDTH, CELL_SIZE * HEIGHT])
+    clock = pygame.time.Clock()
+    return screen, clock
+
+# Frame Update
+def draw_frame(screen):
+    pygame.draw.rect(screen, COLORS["fruit"], fruit)
     for x, y in snake:
-        rect = [x * 20, y * 20, 20, 20]
-        pygame.draw.rect(screen, black, rect)
-        pygame.display.update()
-    clock.tick(2)
+        rect = [x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE]
+        pygame.draw.rect(screen, COLORS["snake"], rect)
+    pygame.display.update()
+    pygame.display.set_caption(f"🐍 Score: {score}")
+
+# Wait for next frame
+def wait_for_next_screen(clock):
+    clock.tick(FPS)
+
+# Main Loop
+screen, clock = setup()
+while True:
+    handle_events()
+    move_snake()
+    draw_frame(screen)
+    wait_for_next_screen(clock)    
