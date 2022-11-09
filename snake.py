@@ -53,6 +53,16 @@ while True:
             score += 1
             pygame.display.set_caption(f"🐍 Score: {score}")
 
+    #toucher le mur
+    if snake[0][0] < 0 or snake[0][0] >29 or snake[0][1] < 0 or snake[0][1] >29:
+        pygame.quit()
+        sys.exit()
+
+    #se mordre la queue
+    if snake[0][0] == snake[-1][0] and snake[0][1] == snake[-1][1] :
+        pygame.quit()
+        sys.exit()
+
     #déplacement du serpent
     snake.pop()
     a = snake[0].copy()
